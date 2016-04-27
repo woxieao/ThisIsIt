@@ -329,7 +329,7 @@
     <Content Include="Views\Test\Test2.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\Files\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
