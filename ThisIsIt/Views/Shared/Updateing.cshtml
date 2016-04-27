@@ -1,0 +1,43 @@
+﻿<div style="background-color: blue; height: 30px; margin: 0; padding: 0;" class="col-lg-12">
+    <span style="color: white">
+       &nbsp; <strong class="glyphicon glyphicon-cog">C:\Windows\system32\cmd.exe</strong>
+        <span style="float: right;">
+           <span style="background-color: red">
+                <a href="/">
+                    <span style="color: white" class="glyphicon glyphicon-remove"></span>
+                </a>
+            </span>
+        </span>
+    </span>
+</div>
+<div style="background-color: black; height: 70%; margin: 0; padding: 0;" class="col-lg-12">
+    <span style="color: green">
+        <em>C:</em><strong>\</strong><em>Code</em><strong>\</strong><em>By</em><strong>\</strong><em>XA></em><b> 更多功能正在更新中</b><strong id="underline">_</strong>
+        </span>
+    <span id="nowTime" style="color: wheat; position: absolute; left: 0px; bottom: 0px; padding: 0px; margin: 0px"></span>
+</div>
+<script type="text/javascript">
+
+    function timer() {
+        var now = new Date();
+        $("#nowTime").html(PhpTickToDate(now.getTime()));
+        var second = now.getMilliseconds();
+        var str = (second % 2 === 0) ? "_" : " ";
+        $("#underline").html(str);
+        setTimeout(timer, 300);
+    }
+
+    function PhpTickToDate(tick) {
+        //var date = new Date(tick * 1000);
+        var date = new Date(tick);
+        var Y = date.getFullYear() + '-';
+        var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+        var D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
+        var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+        var m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
+        var s = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+        return Y + M + D + h + m + s;
+    }
+
+    timer();
+</script>

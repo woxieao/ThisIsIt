@@ -1,0 +1,45 @@
+﻿<table class="table table-responsive">
+    <thead>
+    <tr>
+        <th colspan="4">
+            <div class="input-group">
+                <span class="input-group-addon glyphicon glyphicon-search" id="basic-addon2" onclick="SearchUserPic()"></span>
+                <input id="userName" class="form-control" type="text" name="createrName" aria-describedby="basic-addon2" value="" placeholder="指定用户名"/>
+            </div>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            上传者
+        </th>
+        <th>上传时间</th>
+        <th>最近使用时间</th>
+        <th>图片</th>
+    </tr>
+
+    </thead>
+    @{
+        var picList = (List<PicList>) Model;
+        foreach (var pic in picList)
+        {
+            <tr>
+                <td>
+                    <a href="/DrawPic/PicList?createrName=@pic.CreaterName" title="查看该用户的全部图片">@pic.CreaterName</a>
+                </td>
+                <td>@pic.CreateTime</td>
+                <td>@pic.LastUseTime</td>
+                <td>
+                    <a href="/DrawPic/ViewPic?picId=@pic.PicId">
+                        <img width="100" src="@pic.PicFilePath"/>
+                    </a>
+                </td>
+            </tr>
+        }
+    }
+</table>
+<script type="text/javascript">
+    function SearchUserPic() {
+        var userName = $('#userName').val();
+        window.location.href = "/DrawPic/PicList?createrName=" + userName;
+    }
+</script>

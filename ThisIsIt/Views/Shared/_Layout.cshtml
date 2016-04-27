@@ -1,0 +1,35 @@
+﻿@using ThisIsIt.Models
+<!DOCTYPE html>
+<html style="height: 100%;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/Pictures/XAzrael.png"/>
+    <title>@ViewBag.Title By XA</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/xa")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</head>
+<body class="container" style="height: 100%">
+<ul class="nav nav-pills ">
+    @*nav-stacked*@
+    <li role="presentation">
+        <a href="/DrawPic/UploadPic"><span class="glyphicon glyphicon-home"></span> 上传图片</a>
+    </li>
+    <li role="presentation">
+        <a href="/DrawPic/PicList"> <span class="glyphicon glyphicon-list"></span> 图片库<span class="badge">@ThisIsIt.Core.PicHandler.GetPicCount()</span></a>
+    </li>
+    <li role="presentation">
+        <a href="/DrawPic/ModifyLog" target="_blank"><span class="glyphicon glyphicon-star"></span> 最近编辑</a>
+    </li>
+    <li role="presentation">
+        <a href="/DrawPic/About" target="_blank"><span class="glyphicon glyphicon-question-sign"></span> 关于</a>
+    </li>
+</ul>
+@RenderBody()
+</body>
+</html>
