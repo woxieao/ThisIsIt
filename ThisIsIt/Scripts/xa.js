@@ -372,6 +372,7 @@ function Csv() {
                 index0 = columnName[0];
                 var index1 = columnName[1];
                 //when index0 is a function, call the function with whole row data and index1
+                //when index1 is a function, call the function with rowData[index0]
                 return $.isFunction(index0) ? index0(rowData, index1) : index1(rowData[index0]);
                 break;
             }
