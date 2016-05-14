@@ -359,30 +359,31 @@ function Csv() {
     function columnDataFormat(rowData, columnName) {
         if ($.isArray(columnName)) {
             var funcArgsCount = columnName.length;
-            var columnNameStr;
-            var func;
+            var index0;
             switch (funcArgsCount) {
+            case 1:
+            {
+                //when index0 is a function, call the function with whole row data
+                index0 = columnName[0];
+                return $.isFunction(index0) ? index0(rowData) : rowData[index0];;
+            }
             case 2:
             {
-                columnNameStr = columnName[0];
-                func = columnName[1];
-                return func(rowData[columnNameStr]);
+                index0 = columnName[0];
+                var index1 = columnName[1];
+                //when index0 is a function, call the function with whole row data and index1
+                return $.isFunction(index0) ? index0(rowData, index1) : index1(rowData[index0]);
                 break;
             }
-            case 3:
-            {
-                func = columnName[1];
-                var arg = columnName[2];
-                return func(rowData, arg);
-                break;
-            }
+
             default:
             {
                 return rowData[columnName];
             }
             }
+        } else {
+            return $.isFunction(columnName) ? columnName(rowData) : rowData[columnName];
         }
-        return rowData[columnName];
     }
 
 //export csv string
@@ -406,7 +407,7 @@ function Csv() {
         aTag.click();
     }
     this.Just4Test = function() {
-        var headers = 'Name,Sex,Sql,C++,JavaScript,C#,Total';
+        var headers = 'Name,Sex,Sql,C++,JavaScript,C#,Total,ReportTime';
         var testJson = [
             {
                 "Name": "AlexXie",
@@ -433,12 +434,12 @@ function Csv() {
             "JavaScript",
             "C#",
             [
-                "Total",
                 function(rowData, passLine) {
                     var total = rowData["Sql"] + rowData["C++"] + rowData["JavaScript"] + rowData["C#"];
                     return total + (total >= passLine ? "-Passed" : "-Failed");
                 }, 240
-            ]
+            ],
+            function() { return new Date().toLocaleString() }
         ], "Report");
     }
 }
