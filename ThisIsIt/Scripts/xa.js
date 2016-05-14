@@ -387,9 +387,9 @@ function Csv() {
     }
 
 //export csv string
-    this.ExportCsvStr = function(data, headers, columns) {
+    this.ExportCsvStr = function(data, columns, headers) {
         var columnsLength = columns.length;
-        var csvStr = headers === "" ? "" : headers + "\n";
+        var csvStr = (headers == null || headers === "") ? "" : headers + "\n";
         for (var i in data) {
             for (var x = 0; x < columnsLength; x++) {
                 csvStr += columnDataFormat(data[i], columns[x]) + (x === columnsLength - 1 ? "\n" : ",");
@@ -398,10 +398,10 @@ function Csv() {
         return csvStr;
     }
     //export csv string&download csv
-    this.DownloadCsv = function(data, headers, columns, csvName) {
+    this.DownloadCsv = function(data, columns, headers, csvName) {
         csvName = csvName == null ? 'DownLoad' : csvName;
         var aTag = document.createElement('a');
-        aTag.href = "data:text/csv;charset=UTF-8,\ufeff" + encodeURIComponent(this.ExportCsvStr(data, headers, columns));
+        aTag.href = "data:text/csv;charset=UTF-8,\ufeff" + encodeURIComponent(this.ExportCsvStr(data, columns, headers));
         aTag.innerHTML = csvName;
         aTag.download = csvName + ".csv";
         aTag.click();
@@ -426,7 +426,7 @@ function Csv() {
                 "C#": -100
             }
         ];
-        this.DownloadCsv(testJson, headers, [
+        this.DownloadCsv(testJson, [
             "Name",
             ["Sex", function(sex) { return sex ? "Male" : "Female" }],
             "Sql",
@@ -440,7 +440,7 @@ function Csv() {
                 }, 240
             ],
             function() { return new Date().toLocaleString() }
-        ], "Report");
+        ], headers, "Report");
     }
 }
 
