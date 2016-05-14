@@ -96,11 +96,6 @@ function AjaxFunc(url, data, successFun, errorFun) {
     }
 }
 
-function PageHandler(condition, pageHandlerClass) {
-    condition = condition == null ? {} : condition;
-    pageHandlerClass = pageHandlerClass == null ? newPage : pageHandlerClass;
-    return pageHandlerClass.Jump(condition) ? 1 : 0;
-}
 
 function TicksToDays(ticks) {
     return (ticks / 24 / 60 / 60).toFixed(1);
@@ -358,33 +353,27 @@ function IsHandSlip(msg) {
     return false;
 }
 
-function isArray(source) {
-    return '[object Array]' == Object.prototype.toString.call(source);
-}
 
-//csv handler
-// {"data":"Json data",
-// "headers":"The table's header(eg:'name,age,sex,location')",
-// "columns":"The column array to match headers",
-// "csvName":"The download file name"}
 function Csv() {
     //format single column data
-    function ColumnDataFormat(rowData, columnName) {
-        if (isArray(columnName)) {
+    function columnDataFormat(rowData, columnName) {
+        if ($.isArray(columnName)) {
             var funcArgsCount = columnName.length;
+            var columnNameStr;
+            var func;
             switch (funcArgsCount) {
             case 2:
             {
-                var columnNameStr = columnName[0];
-                var func = columnName[1];
+                columnNameStr = columnName[0];
+                func = columnName[1];
                 return func(rowData[columnNameStr]);
                 break;
             }
             case 3:
             {
-                var columnNameStr = columnName[0];
-                var func = columnName[1];
-                return func(columnNameStr, rowData);
+                func = columnName[1];
+                var arg = columnName[2];
+                return func(rowData, arg);
                 break;
             }
             default:
@@ -396,56 +385,61 @@ function Csv() {
         return rowData[columnName];
     }
 
-    this.ColumnMulti = function(columnStrList, rowData) {
-        var columnList = columnStrList.split(',');
-        var num = 1;
-        for (var i = 0; i < columnList.length; i++) {
-            num *= rowData[columnList[i]];
-        }
-        return num.toFixed(2);
-    }
-
-    //export csv string
+//export csv string
     this.ExportCsvStr = function(data, headers, columns) {
         var columnsLength = columns.length;
-        var headCount = (headers.split(',')).length;
-        if (headCount != columnsLength) {
-            alert('表头个数与数据列个数不匹配,请检查');
-            return null;
-        }
-        var csvStr = headers + '\n';
+        var csvStr = headers === "" ? "" : headers + "\n";
         for (var i in data) {
             for (var x = 0; x < columnsLength; x++) {
-                csvStr += ColumnDataFormat(data[i], columns[x]) + (x == columnsLength - 1 ? '\n' : ',');
+                csvStr += columnDataFormat(data[i], columns[x]) + (x === columnsLength - 1 ? "\n" : ",");
             }
         }
         return csvStr;
     }
     //export csv string&download csv
     this.DownloadCsv = function(data, headers, columns, csvName) {
-        csvName = csvName == null ? '下载' : csvName;
-        if (!$('#download_csv_a')[0]) {
-            $("body").append('<div style="display: none"><a id="download_csv_a"><span id="down_load_span"></span></a></div>');
-        }
-        //without '\ufeff' your csv file will be messy code
-        var hrefStr = 'data:text/csv;charset=UTF-8,\ufeff' + encodeURIComponent(this.ExportCsvStr(data, headers, columns));
-        $('#download_csv_a').attr('href', hrefStr);
-        $('#download_csv_a').attr('download', csvName + '.csv');
-        $('#down_load_span').html(csvName);
-        $('#down_load_span').click();
+        csvName = csvName == null ? 'DownLoad' : csvName;
+        var aTag = document.createElement('a');
+        aTag.href = "data:text/csv;charset=UTF-8,\ufeff" + encodeURIComponent(this.ExportCsvStr(data, headers, columns));
+        aTag.innerHTML = csvName;
+        aTag.download = csvName + ".csv";
+        aTag.click();
     }
-    this.Help = function() {
-        var headers = 'json数据包,表头,json列名数组,文件名';
-        var helpJson = [
+    this.Just4Test = function() {
+        var headers = 'Name,Sex,Sql,C++,JavaScript,C#,Total';
+        var testJson = [
             {
-                "data": "The Json data",
-                "headers": "The table's header(eg:'name，age，sex，location')",
-                "columns": "The column array to match headers",
-                "csvName": "The download file name",
-                "coder": "XA"
+                "Name": "AlexXie",
+                "Sex": 1,
+                "Sql": 90,
+                "C++": 80,
+                "JavaScript": 90,
+                "C#": 100
+            },
+            {
+                "Name": "Lee",
+                "Sex": 0,
+                "Sql": 59,
+                "C++": 0,
+                "JavaScript": 59,
+                "C#": -100
             }
         ];
-        this.DownloadCsv(helpJson, headers, ['data', 'headers', 'columns', 'csvName'], 'TestCsv');
+        this.DownloadCsv(testJson, headers, [
+            "Name",
+            ["Sex", function(sex) { return sex ? "Male" : "Female" }],
+            "Sql",
+            "C++",
+            "JavaScript",
+            "C#",
+            [
+                "Total",
+                function(rowData, passLine) {
+                    var total = rowData["Sql"] + rowData["C++"] + rowData["JavaScript"] + rowData["C#"];
+                    return total + (total >= passLine ? "-Passed" : "-Failed");
+                }, 240
+            ]
+        ], "Report");
     }
 }
 
